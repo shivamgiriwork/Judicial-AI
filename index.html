@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judicial AI Pro | Team Retro X</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { brand: '#2563eb', darkBg: '#0f172a', darkSurface: '#1e293b' } } }
+        }
+    </script>
+    <style>
+        body { transition: background-color 0.3s, color 0.3s; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.3); }
+        .dark .glass-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .hidden-view { display: none !important; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #2563eb; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-darkBg dark:text-slate-100 min-h-screen font-sans antialiased flex flex-col">
+
+    <div id="auth-view" class="flex-1 flex items-center justify-center p-4 relative overflow-hidden">
+        
+        <div id="login-box" class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md z-10 transition-all duration-300">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mb-2">⚖️ Judicial AI Pro</h1>
+                <p class="text-sm text-slate-500">Secure Legal Workspace</p>
+            </div>
+            <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-5">
+                <input type="text" id="login-phone" placeholder="Mobile Number" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="login-pass" placeholder="Password" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="submit" id="login-btn" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:scale-[1.02] transition shadow-lg">Secure Login</button>
+            </form>
+            <div id="login-error" class="text-red-500 text-sm mt-3 text-center hidden"></div>
+            <div class="mt-4 text-center text-sm">
+                <button onclick="toggleAuth('signup')" class="text-blue-600 hover:underline font-bold">New user? Create Secure Account</button>
+            </div>
+        </div>
+
+        <div id="signup-box" class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-lg z-10 hidden-view transition-all duration-300">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-blue-600 dark:text-blue-400">Create Encrypted Identity</h2>
+            </div>
+            <form onsubmit="event.preventDefault(); handleSignup();" class="space-y-4">
+                <div class="flex gap-4">
+                    <input type="text" id="reg-fname" placeholder="First Name" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                    <input type="text" id="reg-lname" placeholder="Last Name" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                </div>
+                <input type="text" id="reg-phone" placeholder="Mobile Number" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                <input type="email" id="reg-email" placeholder="Email Address" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                <div class="flex gap-4">
+                    <input type="date" id="reg-dob" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                    <input type="text" id="reg-loc" placeholder="City/Location" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                </div>
+                <input type="password" id="reg-pass" placeholder="Create Strong Password" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                
+                <button type="submit" id="signup-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition">Register</button>
+            </form>
+            <div id="signup-error" class="text-red-500 text-sm mt-3 text-center hidden"></div>
+            <div id="signup-success" class="text-green-500 text-sm mt-3 text-center hidden"></div>
+            <div class="mt-4 text-center text-sm">
+                <button onclick="toggleAuth('login')" class="text-slate-500 hover:underline">← Back to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-view" class="hidden-view h-screen flex overflow-hidden">
+        <aside class="w-72 bg-white dark:bg-darkSurface border-r border-slate-200 dark:border-slate-700 flex flex-col">
+            <div class="p-6 text-center border-b border-slate-200 dark:border-slate-700">
+                <div class="w-20 h-20 mx-auto rounded-full bg-blue-500 flex items-center justify-center text-white text-3xl font-bold mb-3 shadow-lg" id="user-avatar">U</div>
+                <h2 id="user-display-name" class="text-xl font-bold">User Name</h2>
+                <p class="text-xs text-green-500 font-medium">● Secured Session</p>
+            </div>
+            <div class="p-4 flex-1 space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-2">Language</label>
+                    <select id="lang-select" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none">
+                        <option value="English">English</option>
+                        <option value="Hindi">Hindi (हिंदी)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
+                <button onclick="handleLogout()" class="w-full py-2 px-4 text-sm font-medium text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 transition"><i class="fa-solid fa-right-from-bracket"></i> Secure Logout</button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col bg-slate-50 dark:bg-darkBg relative">
+            <header class="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-700 glass-card">
+                <h1 class="font-bold text-lg"><i class="fa-solid fa-lock text-green-500 mr-2"></i> Encrypted Channel</h1>
+            </header>
+            <div id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-6 pb-24">
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-robot text-xs"></i></div>
+                    <div class="glass-card px-5 py-3 rounded-2xl rounded-tl-none max-w-[80%] border-l-4 border-l-blue-500">
+                        <p class="text-sm">Connection Secure. JWT Token Verified. How can I assist you with BNS 2023?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-slate-50 dark:from-darkBg pt-10">
+                <form onsubmit="event.preventDefault(); sendMessage();" class="max-w-4xl mx-auto relative flex items-center">
+                    <input type="text" id="chat-input" placeholder="Type your legal query..." class="w-full py-4 pl-6 pr-16 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 shadow-lg outline-none focus:border-blue-500">
+                    <button type="submit" id="send-btn" class="absolute right-2 w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:8000/api"; 
+
+        function toggleAuth(type) {
+            if(type === 'signup') {
+                document.getElementById('login-box').classList.add('hidden-view');
+                document.getElementById('signup-box').classList.remove('hidden-view');
+            } else {
+                document.getElementById('signup-box').classList.add('hidden-view');
+                document.getElementById('login-box').classList.remove('hidden-view');
+            }
+        }
+
+        // --- 🟢 SECURE SIGNUP LOGIC ---
+        async function handleSignup() {
+            const btn = document.getElementById('signup-btn');
+            const errorDiv = document.getElementById('signup-error');
+            const successDiv = document.getElementById('signup-success');
+            
+            btn.innerHTML = '<div class="loader"></div> Creating...';
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+
+            const payload = {
+                first_name: document.getElementById('reg-fname').value,
+                last_name: document.getElementById('reg-lname').value,
+                phone: document.getElementById('reg-phone').value,
+                email: document.getElementById('reg-email').value,
+                dob: document.getElementById('reg-dob').value,
+                location: document.getElementById('reg-loc').value,
+                password: document.getElementById('reg-pass').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    successDiv.innerText = "Identity Created Successfully! Please login.";
+                    successDiv.classList.remove('hidden');
+                    setTimeout(() => toggleAuth('login'), 2000);
+                } else {
+                    errorDiv.innerText = data.detail;
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.innerText = "Server connection failed.";
+                errorDiv.classList.remove('hidden');
+            }
+            btn.innerHTML = 'Register';
+        }
+
+        // --- 🔐 SECURE LOGIN LOGIC (SAVING TOKEN) ---
+        async function handleLogin() {
+            const phone = document.getElementById('login-phone').value;
+            const password = document.getElementById('login-pass').value;
+            const btn = document.getElementById('login-btn');
+            const errorDiv = document.getElementById('login-error');
+
+            btn.innerHTML = '<div class="loader"></div> Decrypting...';
+            errorDiv.classList.add('hidden');
+
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: phone, password: password })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    // 🛡️ THE MOST IMPORTANT LINE: Save token in LocalStorage
+                    localStorage.setItem('jwt_token', data.access_token);
+                    
+                    document.getElementById('user-display-name').innerText = data.user;
+                    document.getElementById('user-avatar').innerText = data.user.charAt(0).toUpperCase();
+                    
+                    document.getElementById('auth-view').classList.add('hidden-view');
+                    document.getElementById('dashboard-view').classList.remove('hidden-view');
+                } else {
+                    errorDiv.innerText = data.detail || "Invalid credentials!";
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.innerText = "Server Error!";
+                errorDiv.classList.remove('hidden');
+            }
+            btn.innerHTML = 'Secure Login';
+        }
+
+        // --- 🚪 SECURE LOGOUT (DESTROYING TOKEN) ---
+        function handleLogout() {
+            localStorage.removeItem('jwt_token'); // Destroy the token
+            
+            document.getElementById('dashboard-view').classList.add('hidden-view');
+            document.getElementById('auth-view').classList.remove('hidden-view');
+            document.getElementById('login-phone').value = '';
+            document.getElementById('login-pass').value = '';
+            
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.innerHTML = `
+                <div class="flex gap-4 items-start">
+                    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-robot text-xs"></i></div>
+                    <div class="glass-card px-5 py-3 rounded-2xl rounded-tl-none max-w-[80%] border-l-4 border-l-blue-500">
+                        <p class="text-sm">Connection Secure. JWT Token Verified. How can I assist you with BNS 2023?</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- 🧠 SECURE CHAT LOGIC (SENDING TOKEN) ---
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            const btn = document.getElementById('send-btn');
+            if (!message) return;
+
+            const chatContainer = document.getElementById('chat-container');
+            const lang = document.getElementById('lang-select').value;
+            
+            // 🛡️ Retrieve Token
+            const token = localStorage.getItem('jwt_token');
+            if(!token) {
+                alert("Security breach detected: No Token Found! Logging out.");
+                handleLogout();
+                return;
+            }
+
+            chatContainer.insertAdjacentHTML('beforeend', `
+                <div class="flex gap-4 items-start justify-end">
+                    <div class="bg-blue-600 text-white px-5 py-3 rounded-2xl rounded-tr-none shadow-md max-w-[80%]">
+                        <p class="text-sm">${message}</p>
+                    </div>
+                </div>
+            `);
+            
+            input.value = '';
+            btn.innerHTML = '<div class="loader" style="width:15px; height:15px;"></div>';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            try {
+                // 🛡️ SECURE API CALL
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` // Sending VIP Pass
+                    },
+                    body: JSON.stringify({ query: message, language: lang, pdf_text: "" })
+                });
+
+                if (response.status === 401) {
+                    alert("Session Expired or Invalid Token. Please login again.");
+                    handleLogout();
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    chatContainer.insertAdjacentHTML('beforeend', `
+                        <div class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-robot text-xs"></i></div>
+                            <div class="glass-card px-5 py-3 rounded-2xl rounded-tl-none max-w-[80%] border-l-4 border-l-blue-500 shadow-sm">
+                                <p class="text-sm whitespace-pre-wrap">${data.response}</p>
+                            </div>
+                        </div>
+                    `);
+                } else {
+                    alert("AI Error: " + data.detail);
+                }
+            } catch (error) {
+                alert("Failed to connect to AI Engine.");
+            }
+            
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>
