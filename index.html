@@ -1,113 +1,195 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Judicial AI Pro | Team Retro X</title>
+    <title>Judicial AI Pro | Advanced Legal Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: { extend: { colors: { brand: '#2563eb', darkBg: '#0f172a', darkSurface: '#1e293b' } } }
+            theme: { 
+                extend: { 
+                    colors: { brand: '#3b82f6', darkBg: '#0b1120', darkSurface: '#1e293b' },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'slide-up': 'slideUp 0.4s ease-out forwards',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards'
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                } 
+            }
         }
     </script>
     <style>
-        body { transition: background-color 0.3s, color 0.3s; }
-        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.3); }
-        .dark .glass-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .hidden-view { display: none !important; }
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #2563eb; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block;}
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: all 0.3s ease; }
+        
+        /* Premium Glassmorphism */
+        .glass-card { 
+            background: rgba(30, 41, 59, 0.4); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Chat Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.5); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.8); }
+
+        .hidden-view { display: none !important; opacity: 0; }
+        
+        /* Glowing Input */
+        .glow-input:focus { box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); border-color: #3b82f6; }
+        
+        /* AI Typing Dot Animation */
+        .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-darkBg dark:text-slate-100 min-h-screen font-sans antialiased flex flex-col">
+<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col overflow-hidden relative">
 
-    <div id="auth-view" class="flex-1 flex items-center justify-center p-4 relative overflow-hidden">
+    <div class="absolute top-0 -left-4 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+    <div class="absolute top-0 -right-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+    <div class="absolute -bottom-8 left-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+
+    <div id="auth-view" class="flex-1 flex items-center justify-center p-4 relative z-10 animate-fade-in">
         
-        <div id="login-box" class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-md z-10 transition-all duration-300">
+        <div id="login-box" class="glass-card p-10 rounded-3xl shadow-2xl w-full max-w-md transform transition-all duration-500 hover:scale-[1.01]">
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mb-2">⚖️ Judicial AI Pro</h1>
-                <p class="text-sm text-slate-500">Secure Legal Workspace</p>
+                <div class="inline-block p-3 rounded-full bg-blue-500/20 mb-3 text-blue-400">
+                    <i class="fa-solid fa-scale-balanced text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 mb-2 tracking-tight">Judicial AI Pro</h1>
+                <p class="text-sm text-slate-400 font-medium tracking-wide">AI-Powered Legal Transition Assistant</p>
             </div>
+            
             <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-5">
-                <input type="text" id="login-phone" placeholder="Mobile Number" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="password" id="login-pass" placeholder="Password" required class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none focus:ring-2 focus:ring-blue-500">
-                <button type="submit" id="login-btn" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:scale-[1.02] transition shadow-lg">Secure Login</button>
+                <div class="relative">
+                    <i class="fa-solid fa-phone absolute top-3.5 left-4 text-slate-400"></i>
+                    <input type="text" id="login-phone" placeholder="Mobile Number" required class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/50 border border-slate-700 text-white outline-none glow-input transition-all">
+                </div>
+                <div class="relative">
+                    <i class="fa-solid fa-lock absolute top-3.5 left-4 text-slate-400"></i>
+                    <input type="password" id="login-pass" placeholder="Encrypted Password" required class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/50 border border-slate-700 text-white outline-none glow-input transition-all">
+                </div>
+                <button type="submit" id="login-btn" class="w-full py-3.5 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold tracking-wide hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all duration-300">
+                    Initialize System <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
             </form>
-            <div id="login-error" class="text-red-500 text-sm mt-3 text-center hidden"></div>
-            <div class="mt-4 text-center text-sm">
-                <button onclick="toggleAuth('signup')" class="text-blue-600 hover:underline font-bold">New user? Create Secure Account</button>
+            <div id="login-error" class="text-red-400 text-sm mt-4 text-center hidden animate-pulse font-medium"></div>
+            
+            <div class="mt-8 text-center border-t border-slate-700/50 pt-4">
+                <button onclick="toggleAuth('signup')" class="text-slate-400 hover:text-blue-400 text-sm transition-colors duration-300 font-medium">New Agent? <span class="text-blue-500 underline decoration-blue-500/30 underline-offset-4">Create Secure Identity</span></button>
             </div>
         </div>
 
-        <div id="signup-box" class="glass-card p-8 rounded-2xl shadow-2xl w-full max-w-lg z-10 hidden-view transition-all duration-300">
+        <div id="signup-box" class="glass-card p-8 rounded-3xl shadow-2xl w-full max-w-lg hidden-view">
             <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold text-blue-600 dark:text-blue-400">Create Encrypted Identity</h2>
+                <h2 class="text-2xl font-extrabold text-blue-400">Register Identity</h2>
             </div>
             <form onsubmit="event.preventDefault(); handleSignup();" class="space-y-4">
                 <div class="flex gap-4">
-                    <input type="text" id="reg-fname" placeholder="First Name" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
-                    <input type="text" id="reg-lname" placeholder="Last Name" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                    <input type="text" id="reg-fname" placeholder="First Name" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900/50 border border-slate-700 outline-none glow-input">
+                    <input type="text" id="reg-lname" placeholder="Last Name" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900/50 border border-slate-700 outline-none glow-input">
                 </div>
-                <input type="text" id="reg-phone" placeholder="Mobile Number" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
-                <input type="email" id="reg-email" placeholder="Email Address" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                <input type="text" id="reg-phone" placeholder="Mobile Number" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900/50 border border-slate-700 outline-none glow-input">
+                <input type="email" id="reg-email" placeholder="Email Address" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900/50 border border-slate-700 outline-none glow-input">
                 <div class="flex gap-4">
-                    <input type="date" id="reg-dob" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
-                    <input type="text" id="reg-loc" placeholder="City/Location" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                    <input type="date" id="reg-dob" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900/50 border border-slate-700 outline-none glow-input text-slate-400">
+                    <input type="text" id="reg-loc" placeholder="Location" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900/50 border border-slate-700 outline-none glow-input">
                 </div>
-                <input type="password" id="reg-pass" placeholder="Create Strong Password" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 outline-none">
+                <input type="password" id="reg-pass" placeholder="Strong Password" required class="w-full px-4 py-2.5 rounded-xl bg-slate-900/50 border border-slate-700 outline-none glow-input">
                 
-                <button type="submit" id="signup-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition">Register</button>
+                <button type="submit" id="signup-btn" class="w-full py-3 mt-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-blue-500/25">Generate Credentials</button>
             </form>
-            <div id="signup-error" class="text-red-500 text-sm mt-3 text-center hidden"></div>
-            <div id="signup-success" class="text-green-500 text-sm mt-3 text-center hidden"></div>
-            <div class="mt-4 text-center text-sm">
-                <button onclick="toggleAuth('login')" class="text-slate-500 hover:underline">← Back to Login</button>
-            </div>
+            <div id="signup-error" class="text-red-400 text-sm mt-3 text-center hidden"></div>
+            <div id="signup-success" class="text-green-400 text-sm mt-3 text-center hidden"></div>
+            <button onclick="toggleAuth('login')" class="w-full mt-4 text-slate-400 hover:text-white text-sm font-medium transition">← Return to Login</button>
         </div>
     </div>
 
-    <div id="dashboard-view" class="hidden-view h-screen flex overflow-hidden">
-        <aside class="w-72 bg-white dark:bg-darkSurface border-r border-slate-200 dark:border-slate-700 flex flex-col">
-            <div class="p-6 text-center border-b border-slate-200 dark:border-slate-700">
-                <div class="w-20 h-20 mx-auto rounded-full bg-blue-500 flex items-center justify-center text-white text-3xl font-bold mb-3 shadow-lg" id="user-avatar">U</div>
-                <h2 id="user-display-name" class="text-xl font-bold">User Name</h2>
-                <p class="text-xs text-green-500 font-medium">● Secured Session</p>
+    <div id="dashboard-view" class="hidden-view h-screen flex relative z-10 w-full animate-fade-in">
+        
+        <aside class="w-72 glass-card border-r border-slate-700/50 flex flex-col m-4 rounded-3xl overflow-hidden shadow-2xl">
+            <div class="p-8 text-center bg-gradient-to-b from-slate-800/50 to-transparent border-b border-slate-700/50">
+                <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 p-1 shadow-[0_0_15px_rgba(59,130,246,0.5)] mb-4">
+                    <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center text-white text-3xl font-bold" id="user-avatar">S</div>
+                </div>
+                <h2 id="user-display-name" class="text-xl font-extrabold tracking-wide">Agent</h2>
+                <div class="flex items-center justify-center gap-2 mt-2">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-xs text-green-400 font-semibold tracking-widest uppercase">Secured Link</span>
+                </div>
             </div>
-            <div class="p-4 flex-1 space-y-6">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-2">Language</label>
-                    <select id="lang-select" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border-none outline-none">
+
+            <div class="p-6 flex-1 space-y-6">
+                <div class="bg-slate-900/50 p-4 rounded-2xl border border-slate-700/50">
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">AI Language Model</label>
+                    <select id="lang-select" class="w-full p-2.5 rounded-lg bg-slate-800 border border-slate-600 text-sm outline-none text-white focus:border-blue-500 transition-colors">
                         <option value="English">English</option>
-                        <option value="Hindi">Hindi (हिंदी)</option>
+                        <option value="Hindi">Hindi</option>
                     </select>
                 </div>
             </div>
-            <div class="p-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
-                <button onclick="handleLogout()" class="w-full py-2 px-4 text-sm font-medium text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 transition"><i class="fa-solid fa-right-from-bracket"></i> Secure Logout</button>
+
+            <div class="p-6 border-t border-slate-700/50">
+                <button onclick="handleLogout()" class="w-full py-3 px-4 text-sm font-bold text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300">
+                    <i class="fa-solid fa-power-off mr-2"></i> Terminate Session
+                </button>
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col bg-slate-50 dark:bg-darkBg relative">
-            <header class="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-700 glass-card">
-                <h1 class="font-bold text-lg"><i class="fa-solid fa-lock text-green-500 mr-2"></i> Encrypted Channel</h1>
+        <main class="flex-1 flex flex-col relative m-4 ml-0 rounded-3xl glass-card overflow-hidden shadow-2xl">
+            <header class="h-20 flex items-center justify-between px-8 border-b border-slate-700/50 bg-slate-900/40 backdrop-blur-md z-20">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 border border-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-lg tracking-wide text-white">BNS 2023 Intelligence</h1>
+                        <p class="text-xs text-slate-400 font-medium">Llama 3 Core Active</p>
+                    </div>
+                </div>
             </header>
-            <div id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-6 pb-24">
-                <div class="flex gap-4 items-start">
-                    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-robot text-xs"></i></div>
-                    <div class="glass-card px-5 py-3 rounded-2xl rounded-tl-none max-w-[80%] border-l-4 border-l-blue-500">
-                        <p class="text-sm">Connection Secure. JWT Token Verified. How can I assist you with BNS 2023?</p>
+
+            <div id="chat-container" class="flex-1 overflow-y-auto p-8 space-y-6 scroll-smooth pb-32">
+                <div class="flex gap-4 items-end animate-slide-up">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-lg border-2 border-slate-800">
+                        <i class="fa-solid fa-robot text-sm"></i>
+                    </div>
+                    <div class="bg-slate-800/80 px-6 py-4 rounded-2xl rounded-bl-none max-w-[75%] border border-slate-700/50 shadow-md">
+                        <p class="text-sm leading-relaxed text-slate-200">System initialized. Authentication verified. I am ready to assist you with the IPC to BNS 2023 transition. What specific legal query do you have?</p>
                     </div>
                 </div>
             </div>
-            <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-slate-50 dark:from-darkBg pt-10">
-                <form onsubmit="event.preventDefault(); sendMessage();" class="max-w-4xl mx-auto relative flex items-center">
-                    <input type="text" id="chat-input" placeholder="Type your legal query..." class="w-full py-4 pl-6 pr-16 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 shadow-lg outline-none focus:border-blue-500">
-                    <button type="submit" id="send-btn" class="absolute right-2 w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition">
-                        <i class="fa-solid fa-paper-plane"></i>
+
+            <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-slate-900 via-slate-900/95 to-transparent pt-12">
+                <form onsubmit="event.preventDefault(); sendMessage();" class="max-w-4xl mx-auto relative flex items-center group">
+                    <input type="text" id="chat-input" placeholder="Query the database..." class="w-full py-4 pl-6 pr-16 rounded-2xl border border-slate-600 bg-slate-800/90 text-white shadow-xl outline-none glow-input backdrop-blur-sm transition-all text-sm">
+                    <button type="submit" id="send-btn" class="absolute right-2 w-11 h-11 rounded-xl bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(59,130,246,0.4)] group-hover:scale-105">
+                        <i class="fa-solid fa-paper-plane text-sm"></i>
                     </button>
                 </form>
             </div>
@@ -115,25 +197,27 @@
     </div>
 
     <script>
-        const API_BASE = "http://127.0.0.1:8000/api"; 
+        const API_BASE = "http://127.0.0.1:8000/api";
 
         function toggleAuth(type) {
+            const login = document.getElementById('login-box');
+            const signup = document.getElementById('signup-box');
             if(type === 'signup') {
-                document.getElementById('login-box').classList.add('hidden-view');
-                document.getElementById('signup-box').classList.remove('hidden-view');
+                login.classList.add('hidden-view');
+                setTimeout(() => signup.classList.remove('hidden-view'), 300);
             } else {
-                document.getElementById('signup-box').classList.add('hidden-view');
-                document.getElementById('login-box').classList.remove('hidden-view');
+                signup.classList.add('hidden-view');
+                setTimeout(() => login.classList.remove('hidden-view'), 300);
             }
         }
 
-        // --- 🟢 SECURE SIGNUP LOGIC ---
         async function handleSignup() {
             const btn = document.getElementById('signup-btn');
             const errorDiv = document.getElementById('signup-error');
             const successDiv = document.getElementById('signup-success');
+            const originalText = btn.innerHTML;
             
-            btn.innerHTML = '<div class="loader"></div> Creating...';
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Registering...';
             errorDiv.classList.add('hidden');
             successDiv.classList.add('hidden');
 
@@ -156,7 +240,7 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    successDiv.innerText = "Identity Created Successfully! Please login.";
+                    successDiv.innerText = "Identity Created! Switching to login...";
                     successDiv.classList.remove('hidden');
                     setTimeout(() => toggleAuth('login'), 2000);
                 } else {
@@ -164,71 +248,61 @@
                     errorDiv.classList.remove('hidden');
                 }
             } catch (error) {
-                errorDiv.innerText = "Server connection failed.";
+                errorDiv.innerText = "Backend Connection Failed. Check server.";
                 errorDiv.classList.remove('hidden');
             }
-            btn.innerHTML = 'Register';
+            btn.innerHTML = originalText;
         }
 
-        // --- 🔐 SECURE LOGIN LOGIC (SAVING TOKEN) ---
         async function handleLogin() {
             const phone = document.getElementById('login-phone').value;
             const password = document.getElementById('login-pass').value;
             const btn = document.getElementById('login-btn');
             const errorDiv = document.getElementById('login-error');
+            const originalText = btn.innerHTML;
 
-            btn.innerHTML = '<div class="loader"></div> Decrypting...';
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
             errorDiv.classList.add('hidden');
 
             try {
                 const response = await fetch(`${API_BASE}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone: phone, password: password })
+                    body: JSON.stringify({ phone, password })
                 });
                 const data = await response.json();
 
                 if (response.ok) {
-                    // 🛡️ THE MOST IMPORTANT LINE: Save token in LocalStorage
                     localStorage.setItem('jwt_token', data.access_token);
                     
                     document.getElementById('user-display-name').innerText = data.user;
                     document.getElementById('user-avatar').innerText = data.user.charAt(0).toUpperCase();
                     
-                    document.getElementById('auth-view').classList.add('hidden-view');
-                    document.getElementById('dashboard-view').classList.remove('hidden-view');
+                    document.getElementById('auth-view').classList.add('opacity-0');
+                    setTimeout(() => {
+                        document.getElementById('auth-view').classList.add('hidden-view');
+                        document.getElementById('dashboard-view').classList.remove('hidden-view');
+                    }, 300);
                 } else {
-                    errorDiv.innerText = data.detail || "Invalid credentials!";
+                    errorDiv.innerText = data.detail || "Authentication Denied";
                     errorDiv.classList.remove('hidden');
                 }
             } catch (error) {
-                errorDiv.innerText = "Server Error!";
+                errorDiv.innerText = "Connection Refused. Start Python Server.";
                 errorDiv.classList.remove('hidden');
             }
-            btn.innerHTML = 'Secure Login';
+            btn.innerHTML = originalText;
         }
 
-        // --- 🚪 SECURE LOGOUT (DESTROYING TOKEN) ---
         function handleLogout() {
-            localStorage.removeItem('jwt_token'); // Destroy the token
-            
+            localStorage.removeItem('jwt_token');
             document.getElementById('dashboard-view').classList.add('hidden-view');
             document.getElementById('auth-view').classList.remove('hidden-view');
+            document.getElementById('auth-view').classList.remove('opacity-0');
             document.getElementById('login-phone').value = '';
             document.getElementById('login-pass').value = '';
-            
-            const chatContainer = document.getElementById('chat-container');
-            chatContainer.innerHTML = `
-                <div class="flex gap-4 items-start">
-                    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-robot text-xs"></i></div>
-                    <div class="glass-card px-5 py-3 rounded-2xl rounded-tl-none max-w-[80%] border-l-4 border-l-blue-500">
-                        <p class="text-sm">Connection Secure. JWT Token Verified. How can I assist you with BNS 2023?</p>
-                    </div>
-                </div>
-            `;
         }
 
-        // --- 🧠 SECURE CHAT LOGIC (SENDING TOKEN) ---
         async function sendMessage() {
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
@@ -238,39 +312,53 @@
             const chatContainer = document.getElementById('chat-container');
             const lang = document.getElementById('lang-select').value;
             
-            // 🛡️ Retrieve Token
             const token = localStorage.getItem('jwt_token');
             if(!token) {
-                alert("Security breach detected: No Token Found! Logging out.");
+                alert("Security Alert: Token Missing.");
                 handleLogout();
                 return;
             }
 
+            // User Message UI
             chatContainer.insertAdjacentHTML('beforeend', `
-                <div class="flex gap-4 items-start justify-end">
-                    <div class="bg-blue-600 text-white px-5 py-3 rounded-2xl rounded-tr-none shadow-md max-w-[80%]">
-                        <p class="text-sm">${message}</p>
+                <div class="flex gap-4 items-end justify-end animate-slide-up">
+                    <div class="bg-blue-600 px-6 py-4 rounded-2xl rounded-br-none max-w-[75%] shadow-[0_4px_15px_rgba(59,130,246,0.3)] border border-blue-500">
+                        <p class="text-sm leading-relaxed text-white">${message}</p>
                     </div>
                 </div>
             `);
             
             input.value = '';
-            btn.innerHTML = '<div class="loader" style="width:15px; height:15px;"></div>';
+            
+            // Show Typing Indicator
+            const typingId = 'typing-' + Date.now();
+            chatContainer.insertAdjacentHTML('beforeend', `
+                <div id="${typingId}" class="flex gap-4 items-end animate-slide-up">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shrink-0 border-2 border-slate-800"><i class="fa-solid fa-robot text-sm"></i></div>
+                    <div class="bg-slate-800/80 px-5 py-4 rounded-2xl rounded-bl-none border border-slate-700/50 flex items-center gap-1.5 h-[52px]">
+                        <div class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></div>
+                        <div class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></div>
+                        <div class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></div>
+                    </div>
+                </div>
+            `);
+            
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
-                // 🛡️ SECURE API CALL
                 const response = await fetch(`${API_BASE}/chat`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` // Sending VIP Pass
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ query: message, language: lang, pdf_text: "" })
                 });
 
+                document.getElementById(typingId).remove(); // Remove typing indicator
+
                 if (response.status === 401) {
-                    alert("Session Expired or Invalid Token. Please login again.");
+                    alert("Session Timeout. Re-authenticate.");
                     handleLogout();
                     return;
                 }
@@ -279,21 +367,20 @@
 
                 if (response.ok) {
                     chatContainer.insertAdjacentHTML('beforeend', `
-                        <div class="flex gap-4 items-start">
-                            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-robot text-xs"></i></div>
-                            <div class="glass-card px-5 py-3 rounded-2xl rounded-tl-none max-w-[80%] border-l-4 border-l-blue-500 shadow-sm">
-                                <p class="text-sm whitespace-pre-wrap">${data.response}</p>
+                        <div class="flex gap-4 items-end animate-slide-up">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-lg border-2 border-slate-800"><i class="fa-solid fa-robot text-sm"></i></div>
+                            <div class="bg-slate-800/80 px-6 py-4 rounded-2xl rounded-bl-none max-w-[75%] border border-slate-700/50 shadow-md">
+                                <p class="text-sm leading-relaxed text-slate-200 whitespace-pre-wrap">${data.response}</p>
                             </div>
                         </div>
                     `);
                 } else {
-                    alert("AI Error: " + data.detail);
+                    alert("System Error: " + data.detail);
                 }
             } catch (error) {
-                alert("Failed to connect to AI Engine.");
+                document.getElementById(typingId).remove();
+                alert("Neural Net Disconnected.");
             }
-            
-            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     </script>

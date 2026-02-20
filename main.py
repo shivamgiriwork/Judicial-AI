@@ -53,11 +53,10 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
 # --- API SETUP ---
 app = FastAPI(title="Judicial AI Pro Secure Backend")
 
-# 🌐 STRICT CORS Setup (Ab koi aur website isey use nahi kar sakti)
+# 🌐 RELAXED CORS Setup (Testing & Hackathon ke liye)
 app.add_middleware(
     CORSMiddleware,
-    # Live server defaults to 5500 or 5501. Hum strict allowed origins de rahe hain.
-    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500", "http://127.0.0.1:5501", "http://localhost:5501"], 
+    allow_origins=["*"], # Isse ab frontend kisi bhi port (5500, 5501, 5502) se connect ho jayega
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
