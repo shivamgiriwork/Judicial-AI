@@ -57,13 +57,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- AI SETUP ---
+# --- 100% OFFLINE AI SETUP (ENGLISH ONLY) ---
 try:
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vector_db = Chroma(persist_directory="src/vectorstore", embedding_function=embeddings, collection_name="judicial_vault")
-    # Speed Fix: Temperature low kiya aur model ko strict banaya
+    # Strictly Local Llama 3 (Runs fastest in English)
     llm = ChatOllama(model="llama3", temperature=0.1) 
-    print("✅ Fast AI Models Securely Loaded!")
+    print("✅ Fast Offline AI Core Loaded! (English Mode)")
 except Exception as e:
     print(f"⚠️ AI Error: {e}")
 
@@ -93,48 +93,59 @@ def signup(req: SignupRequest):
     if success: return {"status": "success", "message": "Account created!"}
     else: raise HTTPException(status_code=400, detail="User already exists!")
 
+
 @app.post("/api/chat")
 def process_chat(req: ChatRequest, current_user: str = Depends(verify_token)):
     try:
         q = req.query.lower()
-        res = ""
+        
+        # 🔥 1. THE FAST-TRACK DICTIONARY (English Only)
+        responses = {
+            "theft": "Under Section 303 of BNS 2023, theft is punishable with imprisonment up to 3 years, or a fine, or both.",
+            "murder": "Under Section 103 of BNS 2023, the punishment for murder is either the death penalty or life imprisonment, along with a fine.",
+            "kidnap": "Under Section 137 of BNS 2023, kidnapping is punishable with imprisonment for up to 7 years and a fine.",
+            "hit and run": "Under Section 106(2) of BNS 2023, hit and run cases attract imprisonment up to 10 years and a fine.",
+            "defamation": "Under Section 356 of BNS 2023, defamation is punishable with simple imprisonment up to 2 years, a fine, or community service.",
+            "rape": "Under Section 63 of BNS 2023, the punishment for rape is rigorous imprisonment for not less than 10 years, which may extend to life imprisonment, and a fine.",
+            "fraud": "Under Section 318 of BNS 2023, cheating and fraud are punishable with imprisonment up to 3 years, or with a fine, or both.",
+            "reject": "I am a Judicial AI Assistant. I can only provide information related to the Bharatiya Nyaya Sanhita (BNS) 2023."
+        }
 
-        # 🎯 100% ACCURATE MAPPING (Judges yahi puchenge)
-        if "chori" in q or "theft" in q or "bike" in q:
-            res = "BNS 2023 Section 303: Theft (Chori). Punishment: Up to 3 years imprisonment, fine, or both."
-        elif "murder" in q or "302" in q or "கொலை" in q or "हत्या" in q:
-            res = "BNS 2023 Section 103: Murder. Punishment: Death penalty or Life Imprisonment, and fine."
-        elif "cheating" in q or "420" in q or "chioting" in q or "धोखा" in q:
-            res = "BNS 2023 Section 318: Cheating. Punishment: Up to 3 or 7 years imprisonment depending on severity."
-        elif "hit and run" in q or "accident" in q or "106" in q:
-            res = "BNS 2023 Section 106(2): Hit and Run. Punishment: Up to 10 years imprisonment and fine if driver escapes without reporting."
-        elif "lynching" in q or "mob" in q or "जमाव" in q:
-            res = "BNS 2023 Section 103(2): Mob Lynching. Punishment: Death penalty or Life Imprisonment for every member of the group."
-        elif "public property" in q or "property" in q:
-            res = "BNS 2023 Section 324: Mischief causing damage to public property. Stricter penalties than old IPC."
+        # 🎯 2. INTENT MATCHING (Offline Speed Route)
+        # Maintained Hindi keywords just in case someone types in Hinglish, but output will be strictly English.
+        intent = None
+        if any(w in q for w in ["theft", "steal", "bike", "chori"]): intent = "theft"
+        elif any(w in q for w in ["murder", "kill", "assassinate", "murdered"]): intent = "murder"
+        elif any(w in q for w in ["kidnap", "abduct"]): intent = "kidnap"
+        elif any(w in q for w in ["hit and run", "accident", "flee", "run over"]): intent = "hit and run"
+        elif any(w in q for w in ["defamation", "insult", "defame"]): intent = "defamation"
+        elif any(w in q for w in ["rape", "assault"]): intent = "rape"
+        elif any(w in q for w in ["fraud", "cheating", "scam"]): intent = "fraud"
+        elif any(w in q for w in ["company", "register", "recipe", "cricket"]): intent = "reject"
+
+        if intent:
+            return {"status": "success", "response": responses[intent]}
+
+        # 🧠 3. THE PURE LOCAL RAG FALLBACK (For Out of Syllabus Queries)
+        docs = vector_db.similarity_search(req.query, k=2)
+        if docs:
+            context = "\n".join([d.page_content for d in docs])
+            
+            local_prompt = f"""You are a highly professional Judicial AI Expert. 
+            Read this BNS 2023 law context carefully: '{context}'.
+            Based ONLY on the context, answer the user's query: '{req.query}'.
+            CRITICAL RULES:
+            - Answer STRICTLY in English.
+            - Provide a direct, factual, and professional legal response.
+            - Do not include internal thinking notes, brackets, or filler words.
+            Response:"""
+            
+            prompt = ChatPromptTemplate.from_template(local_prompt)
+            chain = prompt | llm | StrOutputParser()
+            final_output = chain.invoke({"input": ""}).strip()
+            return {"status": "success", "response": final_output}
         else:
-            # Agar kuch aur pucha toh PDF se uthao, par strict instruction ke saath
-            docs = vector_db.similarity_search(req.query, k=2)
-            res = "\n".join([d.page_content for d in docs]) if docs else "I am a Judicial AI. Please ask about BNS 2023 laws."
+            return {"status": "success", "response": responses["reject"]}
 
-        # 🛡️ THE FINAL LOCK PROMPT (No English, No Excuses)
-        final_prompt = f"""You are a Legal Translator. 
-        Your ONLY job is to translate the Legal Fact below into {req.language}.
-        
-        RULES:
-        1. Start the response DIRECTLY in {req.language}. No "Hello", no "I am happy to help".
-        2. DO NOT say "I cannot provide legal advice". Just give the information.
-        3. Use pure {req.language} words. Do not mix English.
-        4. BNS full form is 'Bharatiya Nyaya Sanhita'.
-        
-        Legal Fact: {res}
-        """
-
-        llm.temperature = 0.0
-        prompt = ChatPromptTemplate.from_template(final_prompt)
-        chain = prompt | llm | StrOutputParser()
-        output = chain.invoke({"input": ""})
-        
-        return {"status": "success", "response": output}
     except Exception as e:
-        return {"status": "error", "response": "System Overload. Try again."}
+        return {"status": "error", "response": "Local System Overload. Please try again."}
